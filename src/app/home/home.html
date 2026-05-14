@@ -6,9 +6,9 @@
 
 
   <h2>Imóveis em Destaque da Semana</h2>
-  <p>Total carregado: {{ imoveis.length }}</p>
+  <p>Total carregado: {{ imoveis().length }}</p>
   <div class="cartao">
-    @for (item of imoveis; track item.id) {
+    @for (item of imoveis(); track item.id) {
     <div class="item">
 
       <img [src]="item.foto" [alt]="item.titulo">
