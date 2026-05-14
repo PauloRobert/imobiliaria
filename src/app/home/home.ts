@@ -1,4 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+
 interface Imoveis {
   id: number;
   foto: string;
@@ -9,37 +11,25 @@ interface Imoveis {
 
 @Component({
   selector: 'app-home',
+  standalone: true,
   imports: [],
   templateUrl: './home.html',
   styleUrl: './home.scss',
 })
-export class Home {
-  casa: Imoveis[] = [
-    {
-      id: 1,
-      foto: 'images/casa1.png',
-      titulo: 'Casa Condominio Laranjeiras',
-      descricao: 'Casa com 3 quartos, 2 banheiros e área gourmet',
-      detalhes: 'Proxima do objetivo e do Parque ecológico'
-    },
-    {
-      id: 2,
-      foto: 'images/casa2.png',
-      titulo: 'Casa Condominio Montreal',
-      descricao: 'Casa com 3 quartos, 2 banheiros e área gourmet',
-      detalhes: 'Proxima do centro da cidade'
-    },
-    {
-      id: 3,
-      foto: 'images/casa3.png',
-      titulo: 'Casa Condominio Vila Rica',
-      descricao: 'Casa com 4 quartos, 1 lavago,  2 banheiros e área gourmet',
-      detalhes: 'Proxima do Alphaville'
-    },
-  ];
-  maisDetalhes(descritivo: Imoveis) {
-    alert(`Imóvel: ${descritivo.titulo} \nDescrição: ${descritivo.descricao}`);
+
+export class Home implements OnInit {
+  imoveis: Imoveis[] = [];
+
+  constructor(private http: HttpClient, private cdr: ChangeDetectorRef) {}
+
+  ngOnInit(): void {
+  this.http.get<Imoveis[]>('/data/dados.json').subscribe(data => {
+  this.imoveis = data ?? [];
+  this.cdr.detectChanges();
+  });
   }
 
-
+  maisDetalhes(item: Imoveis) {
+  alert(`Imóvel: ${item.titulo}\nDescrição: ${item.descricao}`);
+  }
 }
