@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 interface Imoveis {
@@ -16,20 +16,18 @@ interface Imoveis {
   templateUrl: './home.html',
   styleUrl: './home.scss',
 })
-
 export class Home implements OnInit {
-  imoveis: Imoveis[] = [];
+  imoveis = signal<Imoveis[]>([]);
 
-  constructor(private http: HttpClient, private cdr: ChangeDetectorRef) {}
+  constructor(private http: HttpClient) {}
 
   ngOnInit(): void {
-  this.http.get<Imoveis[]>('/data/dados.json').subscribe(data => {
-  this.imoveis = data ?? [];
-  this.cdr.detectChanges();
-  });
+    this.http.get<Imoveis[]>('/data/dados.json').subscribe((data) => {
+      this.imoveis.set(data ?? []);
+    });
   }
 
   maisDetalhes(item: Imoveis) {
-  alert(`Imóvel: ${item.titulo}\nDescrição: ${item.descricao}`);
+    alert(`Imóvel: ${item.titulo}\nDescrição: ${item.descricao}`);
   }
 }
